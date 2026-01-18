@@ -1,0 +1,21 @@
+{
+  "name": "Orvella - Premium Fashion & Lifestyle",
+  "short_name": "Orvella",
+  "description": "Discover premium fashion and lifestyle products at Orvella. Shop the latest trends in clothing, accessories, and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ef4444",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["shopping", "lifestyle", "fashion"],
+  "icons": [
+    {
+      "src": "/next.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
