@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 const Navbar = () => {
     const { data: session, status } = useSession();
 
-    // Check both session.user.role and session.role for compatibility
+   
     const userRole = session?.user?.role || session?.role;
     const isAdmin = userRole === "admin";
 
@@ -21,10 +21,10 @@ const Navbar = () => {
         <li>
             <NavLink href={'/products'}>Products</NavLink>
         </li>
-        {/* Only show order-related links after session is loaded to prevent hydration mismatch */}
+      
         {status === "loading" ? null : (
             status === "authenticated" && isAdmin ? (
-                // Admin navigation
+                
                 <>
                     <li>
                         <NavLink href={'/orders'}>Orders</NavLink>
@@ -34,7 +34,7 @@ const Navbar = () => {
                     </li>
                 </>
             ) : (
-                // Regular user navigation (only show if authenticated)
+                
                 status === "authenticated" && (
                     <li>
                         <NavLink href={'/my-orders'}>My Orders</NavLink>
@@ -57,7 +57,7 @@ const Navbar = () => {
         <div>
             <div className="navbar bg-base-100 py-0 max-h-16">
                 <div className="navbar-start">
-                    <div className="dropdown relative"> {/* changed: ensure positioned ancestor */}
+                    <div className="dropdown relative"> 
                         <div tabIndex="0" role="button" className="btn btn-ghost lg:hidden">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
                         </div>

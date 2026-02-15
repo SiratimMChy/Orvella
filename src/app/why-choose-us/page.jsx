@@ -7,7 +7,7 @@ const WhyChooseUsPage = () => {
     {
       icon: <FaShippingFast className="text-3xl text-red-600" />,
       title: "Free Shipping",
-      description: "Free delivery on orders above ৳1000. Fast and reliable shipping across Bangladesh."
+      description: "Free delivery on orders above ৳5n000. Fast and reliable shipping across Bangladesh."
     },
     {
       icon: <FaShieldAlt className="text-3xl text-red-600" />,
@@ -17,7 +17,7 @@ const WhyChooseUsPage = () => {
     {
       icon: <FaUndo className="text-3xl text-red-600" />,
       title: "Easy Returns",
-      description: "30-day hassle-free return policy. Not satisfied? Return it for free."
+      description: "7-day hassle-free return policy. Not satisfied? Return it for free."
     },
     {
       icon: <FaHeadset className="text-3xl text-red-600" />,
