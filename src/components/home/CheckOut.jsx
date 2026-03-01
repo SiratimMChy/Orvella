@@ -33,6 +33,7 @@ const CheckOut = ({ cartItems = [] }) => {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [isLoadingStripe, setIsLoadingStripe] = useState(false);
 
   const totalItems = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -76,7 +77,57 @@ const CheckOut = ({ cartItems = [] }) => {
         return;
       }
 
-      // Create order payload
+      // Handle Stripe payment - DO NOT create order yet
+      if (formData.paymentMethod === 'stripe') {
+        setIsLoadingStripe(true);
+        
+        try {
+          const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              items: cartItems,
+              customerEmail: formData.email.trim(),
+              customerName: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
+              totalAmount: total,
+              shippingDetails: {
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+                phone: formData.phone.trim(),
+                address: formData.address.trim(),
+                city: formData.city.trim(),
+                postalCode: formData.postalCode.trim(),
+                specialInstructions: formData.specialInstructions.trim(),
+              }
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.url) {
+            // Redirect to Stripe checkout - order will be created after successful payment
+            window.location.href = data.url;
+            return;
+          } else {
+            throw new Error('Failed to create checkout session');
+          }
+        } catch (error) {
+          console.error('Stripe error:', error);
+          Swal.fire({
+            title: 'Payment Error',
+            text: 'Failed to initialize payment. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#ef4444'
+          });
+          setIsLoadingStripe(false);
+          setIsProcessing(false);
+          return;
+        }
+      }
+
+      // Handle COD payment - Create order immediately
       const orderPayload = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
@@ -85,7 +136,7 @@ const CheckOut = ({ cartItems = [] }) => {
         address: formData.address.trim(),
         city: formData.city.trim(),
         postalCode: formData.postalCode.trim(),
-        paymentMethod: formData.paymentMethod,
+        paymentMethod: 'cod',
         specialInstructions: formData.specialInstructions.trim(),
       };
 
@@ -139,6 +190,7 @@ const CheckOut = ({ cartItems = [] }) => {
       });
     } finally {
       setIsProcessing(false);
+      setIsLoadingStripe(false);
     }
   };
 
@@ -354,7 +406,7 @@ const CheckOut = ({ cartItems = [] }) => {
           </div>
           
           <div className="space-y-3">
-            <label className="flex items-center p-4 border-2 border-primary bg-primary/5 rounded-xl cursor-pointer transition-all duration-200">
+            <label className="flex items-center p-4 border-2 border-gray-200 hover:border-primary/50 rounded-xl cursor-pointer transition-all duration-200">
               <input
                 type="radio"
                 name="paymentMethod"
@@ -378,37 +430,38 @@ const CheckOut = ({ cartItems = [] }) => {
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                      Recommended
+                      Popular
                     </span>
                   </div>
                 </div>
               </div>
             </label>
             
-            <label className="flex items-center p-4 border border-gray-200 rounded-xl cursor-not-allowed opacity-60 bg-gray-50">
+            <label className="flex items-center p-4 border-2 border-gray-200 hover:border-blue-500/50 rounded-xl cursor-pointer transition-all duration-200">
               <input
                 type="radio"
                 name="paymentMethod"
-                value="online"
-                disabled
-                className="w-5 h-5 text-primary focus:ring-primary"
+                value="stripe"
+                checked={formData.paymentMethod === 'stripe'}
+                onChange={handleInputChange}
+                className="w-5 h-5 text-blue-500 focus:ring-blue-500"
               />
               <div className="ml-4 flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gray-200 rounded-lg">
-                      <HiOutlineCreditCard className="w-5 h-5 text-gray-400" />
+                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                      <HiOutlineCreditCard className="w-5 h-5 text-blue-500" />
                     </div>
                     <div>
-                      <span className="font-bold text-gray-900">Online Payment</span>
+                      <span className="font-bold text-gray-900">Card Payment (Stripe)</span>
                       <p className="text-sm text-gray-600 mt-1">
-                        Credit/Debit Card, Mobile Banking (bKash, Nagad, Rocket)
+                        Pay securely with Credit/Debit Card via Stripe
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-sm font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-                      Coming Soon
+                    <span className="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                      Secure
                     </span>
                   </div>
                 </div>
@@ -513,10 +566,15 @@ const CheckOut = ({ cartItems = [] }) => {
           <form onSubmit={handleSubmit} className="mt-6">
             <button
               type="submit"
-              disabled={isProcessing}
+              disabled={isProcessing || isLoadingStripe}
               className="w-full bg-gradient-to-r from-primary to-red-600 hover:from-red-600 hover:to-primary text-white py-4 rounded-2xl font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
             >
-              {isProcessing ? (
+              {isLoadingStripe ? (
+                <>
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Redirecting to Payment...
+                </>
+              ) : isProcessing ? (
                 <>
                   <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing Order...
@@ -524,7 +582,7 @@ const CheckOut = ({ cartItems = [] }) => {
               ) : (
                 <>
                   <HiOutlineCheckCircle className="w-6 h-6" />
-                  Place Order - ৳{total.toFixed(2)}
+                  {formData.paymentMethod === 'stripe' ? 'Proceed to Payment' : `Place Order - ৳${total.toFixed(2)}`}
                 </>
               )}
             </button>
