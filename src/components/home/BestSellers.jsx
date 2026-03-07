@@ -26,7 +26,7 @@ const BestSellers = async () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-8 mb-12">
         {bestSellers.map((product, index) => (
           <div key={product._id} className="group relative">
             {/* Professional Glow Effect */}
@@ -37,8 +37,8 @@ const BestSellers = async () => {
               <ProductCard product={product} />
             </div>
 
-            {/* Floating Stats */}
-            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+            {/* Floating Stats - Hidden on mobile */}
+            <div className="hidden lg:block absolute -bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <div className="bg-white rounded-full px-4 py-2 shadow-lg border border-red-100">
                 <div className="flex items-center gap-2 text-xs">
                   <FaHeart className="text-red-500" />

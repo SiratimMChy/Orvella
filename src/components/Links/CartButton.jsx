@@ -60,7 +60,8 @@ const CartButton = ({ product, disabled = false, className = "" }) => {
       return (
         <>
           <FaSpinner className="text-lg animate-spin" />
-          Adding...
+          <span className="hidden lg:inline">Adding...</span>
+          <span className="lg:hidden">...</span>
         </>
       );
     }
@@ -69,7 +70,8 @@ const CartButton = ({ product, disabled = false, className = "" }) => {
       return (
         <>
           <FaShoppingCart className="text-lg opacity-50" />
-          Out of Stock
+          <span className="hidden lg:inline">Out of Stock</span>
+          <span className="lg:hidden">Out</span>
         </>
       );
     }
@@ -77,7 +79,8 @@ const CartButton = ({ product, disabled = false, className = "" }) => {
     return (
       <>
         <FaShoppingCart className="text-lg" />
-        Add to Cart
+        <span className="hidden lg:inline">Add to Cart</span>
+        <span className="lg:hidden">Add</span>
       </>
     );
   };
@@ -95,10 +98,11 @@ const CartButton = ({ product, disabled = false, className = "" }) => {
     return (
       <button
         disabled
-        className={`${className} bg-gray-200 animate-pulse text-transparent py-4 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 shadow-lg`}
+        className={`${className} bg-gray-200 animate-pulse text-transparent py-1.5 lg:py-4 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 shadow-lg`}
       >
         <FaShoppingCart className="text-lg" />
-        Add to Cart
+        <span className="hidden lg:inline">Add to Cart</span>
+        <span className="lg:hidden">Add</span>
       </button>
     );
   }
@@ -107,7 +111,7 @@ const CartButton = ({ product, disabled = false, className = "" }) => {
     <button
       disabled={status === "loading" || isLoading || disabled}
       onClick={handleAdd2Cart}
-      className={`w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:from-red-700 hover:to-red-600 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg disabled:transform-none disabled:shadow-md disabled:opacity-50`}
+      className={`w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-1.5 lg:py-3 rounded-xl font-bold text-[10px] lg:text-sm flex items-center justify-center gap-2 hover:from-red-700 hover:to-red-600 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg disabled:transform-none disabled:shadow-md disabled:opacity-50`}
     >
       {getButtonContent()}
     </button>

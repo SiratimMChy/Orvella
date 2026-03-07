@@ -29,7 +29,7 @@ const NewArrivals = ({ products }) => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-8 mb-12">
         {products.map((product) => (
           <div key={product._id} className="group relative">
             {/* Professional Glow Effect */}
@@ -38,12 +38,12 @@ const NewArrivals = ({ products }) => {
             {/* Product Container */}
             <div className="relative bg-white rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500 transform group-hover:-translate-y-2 border border-gray-100 overflow-hidden">
               {/* Product Image */}
-              <div className="relative h-72 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+              <div className="relative h-40 lg:h-72 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                 <Image
                   src={product.image}
                   alt={product.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-product.svg';
@@ -54,68 +54,69 @@ const NewArrivals = ({ products }) => {
                 
                 {/* Discount Badge */}
                 {product.discount > 0 && (
-                  <div className="absolute top-4 left-4 z-10">
-                    <div className="bg-red-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-xl">
-                      <div className="text-xs uppercase tracking-wide">Save</div>
-                      <div className="text-lg leading-none">{product.discount}%</div>
+                  <div className="absolute top-2 left-2 lg:top-4 lg:left-4 z-10">
+                    <div className="bg-red-600 text-white px-2 py-1 lg:px-4 lg:py-2 rounded-xl font-bold text-[10px] lg:text-sm shadow-xl">
+                      <div className="text-[8px] lg:text-xs uppercase tracking-wide">Save</div>
+                      <div className="text-sm lg:text-lg leading-none">{product.discount}%</div>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Product Details */}
-              <div className="p-5">
+              <div className="p-2.5 lg:p-5">
                 {/* Title with NEW badge */}
-                <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex items-start justify-between gap-1 lg:gap-2 mb-2 lg:mb-3">
                   <Link href={`/products/${product._id}`}>
-                    <h3 className="text-base font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-red-600 transition-colors duration-300 cursor-pointer flex-1">
+                    <h3 className="text-xs lg:text-base font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-red-600 transition-colors duration-300 cursor-pointer flex-1">
                       {product.title}
                     </h3>
                   </Link>
-                  <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm flex-shrink-0">
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-full text-[9px] lg:text-xs font-bold shadow-sm flex-shrink-0">
                     NEW
                   </div>
                 </div>
 
                 {/* Price and Rating */}
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between mb-2 lg:mb-4">
                   <div>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-2xl font-black text-gray-900">
+                    <div className="flex items-baseline gap-1 lg:gap-2 mb-0.5 lg:mb-1">
+                      <span className="text-base lg:text-2xl font-black text-gray-900">
                         ৳{product.finalPrice.toLocaleString()}
                       </span>
                       {product.discount > 0 && (
-                        <span className="text-sm line-through text-gray-400 font-medium">
+                        <span className="text-[10px] lg:text-sm line-through text-gray-400 font-medium">
                           ৳{product.price.toLocaleString()}
                         </span>
                       )}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs text-gray-500">
+                    <div className="text-[9px] lg:text-xs text-gray-500">
                       ({product.reviews} reviews)
                     </div>
                   </div>
                 </div>
 
                 {/* Sold Count */}
-                <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs font-semibold text-gray-600">
+                <div className="flex items-center justify-between mb-2 lg:mb-4 pb-2 lg:pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-1 lg:gap-2">
+                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-[9px] lg:text-xs font-semibold text-gray-600">
                       {product.sold}+ sold
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
+                  <span className="text-[9px] lg:text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-full">
                     In Stock
                   </span>
                 </div>
 
                 {/* Buttons */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1.5 lg:gap-2">
                   <Link href={`/products/${product._id}`} className="flex-1">
-                    <button className="w-full bg-white border-2 border-red-600 text-red-600 py-3 rounded-xl font-bold text-sm hover:bg-red-50 transition-all duration-300">
-                      View Details
+                    <button className="w-full bg-white border-2 border-red-600 text-red-600 py-1.5 lg:py-3 rounded-xl font-bold text-[10px] lg:text-sm hover:bg-red-50 transition-all duration-300">
+                      <span className="lg:hidden">View</span>
+                      <span className="hidden lg:inline">View Details</span>
                     </button>
                   </Link>
                   <CartButton 
@@ -126,8 +127,8 @@ const NewArrivals = ({ products }) => {
               </div>
             </div>
 
-            {/* Floating New Badge */}
-            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+            {/* Floating New Badge - Hidden on mobile */}
+            <div className="hidden lg:block absolute -bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <div className="bg-white rounded-full px-4 py-2 shadow-lg border border-green-100">
                 <div className="flex items-center gap-2 text-xs">
                   <FaStar className="text-green-500" />
