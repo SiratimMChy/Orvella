@@ -9,6 +9,14 @@ const ProductsPage = () => {
   const [category, setCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const itemsPerPage = 9;
+
+  useEffect(() => {
+    document.title = 'All Products - Orvella';
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -18,9 +26,11 @@ const ProductsPage = () => {
       
       setLoading(true);
       try {
-        const data = await getProducts();
+        const data = await getProducts(currentPage, itemsPerPage);
         if (isMounted) {
-          setProducts(data || []);
+          setProducts(data.products || []);
+          setTotalPages(data.totalPages || 1);
+          setTotal(data.total || 0);
         }
       } catch (err) {
         console.log(err);
@@ -36,7 +46,7 @@ const ProductsPage = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentPage]);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -60,8 +70,6 @@ const ProductsPage = () => {
 
   return (
     <div className='m-4 pb-25 p-2 lg:px-20'>
-      <title>All Products</title>
-      
       <h1 className="text-center text-3xl font-bold mb-8">
         Our Products
       </h1>
@@ -101,6 +109,60 @@ const ProductsPage = () => {
         <div className="text-center py-12">
           <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
           <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+        </div>
+      )}
+
+      {!loading && filteredProducts.length > 0 && totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          
+          <div className="flex gap-2">
+            {[...Array(totalPages)].map((_, index) => {
+              const page = index + 1;
+              if (
+                page === 1 ||
+                page === totalPages ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              ) {
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 border rounded-lg ${
+                      currentPage === page
+                        ? 'bg-red-500 text-white border-red-500'
+                        : 'border-gray-300 hover:bg-gray-100'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              } else if (page === currentPage - 2 || page === currentPage + 2) {
+                return <span key={page} className="px-2 py-2">...</span>;
+              }
+              return null;
+            })}
+          </div>
+
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
+      {!loading && (
+        <div className="text-center text-gray-600 mt-4">
+          Showing {filteredProducts.length} of {total} products
         </div>
       )}
     </div>

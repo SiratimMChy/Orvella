@@ -1,9 +1,13 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const FAQPage = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  
+  useEffect(() => {
+    document.title = 'FAQ - Orvella';
+  }, []);
 
   const faqs = [
     {
@@ -112,8 +116,6 @@ const FAQPage = () => {
 
   return (
     <div className='m-4 pb-25 p-2 lg:px-20'>
-      <title>FAQ</title>
-      
       <h1 className="text-center text-3xl font-bold mb-8">
         Frequently Asked Questions
       </h1>

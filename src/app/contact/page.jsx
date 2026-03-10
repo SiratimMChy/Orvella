@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaInstagram } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
@@ -35,7 +35,6 @@ const ContactPage = () => {
 
   return (
     <div className="w-full px-2 lg:px-0 py-8">
-      <title>Contact Us - Orvella</title>
       
       {/* Header */}
       <div className="text-center mb-12">

@@ -28,6 +28,11 @@ const AdminOrders = ({ orders = [] }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const capitalizeStatus = (status) => {
+    if (!status) return 'Confirmed';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  };
+
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'pending':
@@ -104,14 +109,25 @@ const AdminOrders = ({ orders = [] }) => {
         const response = await updateOrderStatus(orderId, newStatus);
         
         if (response.success) {
-          Swal.fire({
-            title: 'Status Updated!',
-            text: `Order status has been updated to ${newStatus}.`,
-            icon: 'success',
-            confirmButtonColor: '#3b82f6'
-          }).then(() => {
-            window.location.reload();
+          // Show success notification with feedback
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
           });
+
+          Toast.fire({
+            icon: 'success',
+            title: 'Status Updated!',
+            html: `Order status changed to <strong>${capitalizeStatus(newStatus)}</strong><br/><small>Customer will be notified automatically</small>`
+          });
+
+          // Reload to get fresh data
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           throw new Error(response.error);
         }
@@ -308,7 +324,7 @@ const AdminOrders = ({ orders = [] }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                       {getStatusIcon(order.status)}
-                      {order.status || 'Confirmed'}
+                      {capitalizeStatus(order.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -388,7 +404,7 @@ const AdminOrders = ({ orders = [] }) => {
                       <p><strong>Status:</strong> 
                         <span className={`ml-2 inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status)}`}>
                           {getStatusIcon(selectedOrder.status)}
-                          {selectedOrder.status || 'Confirmed'}
+                          {capitalizeStatus(selectedOrder.status)}
                         </span>
                       </p>
                       <p><strong>Payment:</strong> Cash on Delivery</p>

@@ -169,6 +169,15 @@ export const updateOrderStatus = async (orderId, newStatus) => {
       return { success: false, message: "Invalid order ID" };
     }
 
+    // Get the order first to send notification
+    const order = await dbConnect(collections.ORDER).findOne({
+      _id: new ObjectId(orderId)
+    });
+
+    if (!order) {
+      return { success: false, message: "Order not found" };
+    }
+
     const result = await dbConnect(collections.ORDER).updateOne(
       { _id: new ObjectId(orderId) },
       {
@@ -178,6 +187,81 @@ export const updateOrderStatus = async (orderId, newStatus) => {
         },
       }
     );
+
+    if (result.modifiedCount > 0) {
+      // Send email notification to customer about status change
+      try {
+        const statusMessages = {
+          confirmed: {
+            subject: "✅ Order Confirmed - Orvella",
+            message: "Your order has been confirmed and is being prepared."
+          },
+          processing: {
+            subject: "📦 Order Processing - Orvella",
+            message: "Your order is now being processed and will be shipped soon."
+          },
+          shipped: {
+            subject: "🚚 Order Shipped - Orvella",
+            message: "Great news! Your order has been shipped and is on its way to you."
+          },
+          delivered: {
+            subject: "✨ Order Delivered - Orvella",
+            message: "Your order has been successfully delivered. Thank you for shopping with us!"
+          },
+          cancelled: {
+            subject: "❌ Order Cancelled - Orvella",
+            message: "Your order has been cancelled. If you have any questions, please contact our support team."
+          }
+        };
+
+        const statusInfo = statusMessages[newStatus] || {
+          subject: "Order Status Update - Orvella",
+          message: `Your order status has been updated to ${newStatus}.`
+        };
+
+        await sendEmail({
+          to: order.userEmail,
+          subject: statusInfo.subject,
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <title>Order Status Update</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px;">
+                <h1 style="color: #333; text-align: center;">Order Status Update</h1>
+                <p>Dear ${order.userName || 'Customer'},</p>
+                <p>${statusInfo.message}</p>
+                <div style="background-color: #f0f9ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0;">
+                  <p style="margin: 0;"><strong>Order ID:</strong> #${orderId.slice(-8).toUpperCase()}</p>
+                  <p style="margin: 5px 0 0 0;"><strong>New Status:</strong> <span style="color: #3b82f6; font-weight: bold;">${newStatus.toUpperCase()}</span></p>
+                </div>
+                <p>You can track your order status anytime by visiting your orders page.</p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/my-orders" 
+                     style="background-color: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    View My Orders
+                  </a>
+                </div>
+                <p>If you have any questions, please don't hesitate to contact us.</p>
+                <p>Thank you for choosing Orvella!</p>
+                <hr style="margin: 20px 0;">
+                <p style="text-align: center; color: #666; font-size: 12px;">
+                  © ${new Date().getFullYear()} Orvella. All rights reserved.
+                </p>
+              </div>
+            </body>
+            </html>
+          `
+        });
+        console.log("✅ Status update email sent to customer");
+      } catch (emailError) {
+        console.error("⚠️ Status update email failed:", emailError);
+        // Don't fail the status update if email fails
+      }
+    }
 
     return { success: Boolean(result.modifiedCount) };
   } catch (error) {

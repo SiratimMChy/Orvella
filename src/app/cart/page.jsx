@@ -5,6 +5,11 @@ import { FiArrowLeft } from "react-icons/fi";
 import React from "react";
 import Link from "next/link";
 
+export const metadata = {
+  title: 'Shopping Cart',
+  description: 'Review your cart items and proceed to checkout at Orvella.',
+};
+
 const CartPage = async () => {
   const cartItems = await getCart();
 

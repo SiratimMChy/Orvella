@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { 
   HiOutlineShoppingBag, 
@@ -17,14 +17,95 @@ import {
   HiOutlineTrash
 } from 'react-icons/hi2';
 import { FiPackage, FiClock, FiCheck, FiX } from 'react-icons/fi';
-import { cancelOrder, deleteOrder } from '@/actions/server/order';
+import { cancelOrder, deleteOrder, getOrders } from '@/actions/server/order';
 import Swal from 'sweetalert2';
+import Link from 'next/link';
 
 const MyOrders = ({ orders: initialOrders }) => {
   const [orders, setOrders] = useState(initialOrders);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const previousOrdersRef = useRef(initialOrders);
+
+  // Auto-update orders every 10 seconds
+  useEffect(() => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const result = await getOrders();
+        if (result.success && result.orders) {
+          const formattedOrders = result.orders.map((order) => ({
+            _id: order._id.toString(),
+            createdAt: order.createdAt,
+            totalPrice: order.totalPrice,
+            status: order.status || 'pending',
+            firstName: order.firstName || '',
+            lastName: order.lastName || '',
+            email: order.email || order.userEmail || '',
+            phone: order.phone || '',
+            address: order.address || '',
+            city: order.city || '',
+            postalCode: order.postalCode || '',
+            paymentMethod: order.paymentMethod || 'cod',
+            specialInstructions: order.specialInstructions || '',
+            userEmail: order.userEmail || '',
+            userName: order.userName || '',
+            items: order.items.map((item, index) => ({
+              _id: item._id ? item._id.toString() : `item-${index}`,
+              productId: item.productId ? (typeof item.productId === 'object' ? item.productId.toString() : item.productId) : '',
+              title: item.title || '',
+              quantity: item.quantity || 0,
+              price: item.price || 0,
+              image: item.image || '',
+              username: item.username || '',
+              email: item.email || ''
+            })),
+          }));
+
+          // Check for status changes
+          const previousOrders = previousOrdersRef.current;
+          formattedOrders.forEach(newOrder => {
+            const oldOrder = previousOrders.find(o => o._id === newOrder._id);
+            if (oldOrder && oldOrder.status !== newOrder.status) {
+              // Show toast notification for status change
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer);
+                  toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+              });
+
+              Toast.fire({
+                icon: newOrder.status === 'cancelled' ? 'error' : 'success',
+                title: 'Order Status Updated',
+                html: `Order #${newOrder._id.slice(-8).toUpperCase()}<br/>Status: <strong>${capitalizeStatus(oldOrder.status)}</strong> → <strong>${capitalizeStatus(newOrder.status)}</strong>`
+              });
+            }
+          });
+
+          setOrders(formattedOrders);
+          previousOrdersRef.current = formattedOrders;
+
+          // Update selected order if it's being viewed
+          if (selectedOrder) {
+            const updatedSelectedOrder = formattedOrders.find(o => o._id === selectedOrder._id);
+            if (updatedSelectedOrder) {
+              setSelectedOrder(updatedSelectedOrder);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error polling orders:', error);
+      }
+    }, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [selectedOrder]);
 
   const handleCancelOrder = async (orderId, orderNumber) => {
     const result = await Swal.fire({
@@ -141,6 +222,11 @@ const MyOrders = ({ orders: initialOrders }) => {
     }
   };
 
+  const capitalizeStatus = (status) => {
+    if (!status) return 'Confirmed';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  };
+
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'pending':
@@ -210,16 +296,16 @@ const MyOrders = ({ orders: initialOrders }) => {
           No Orders Yet
         </h2>
         <p className="text-gray-600 max-w-md mx-auto mb-6">
-          You haven't placed any orders yet. Start shopping to see your order history here!
+          You haven&apos;t placed any orders yet. Start shopping to see your order history here!
         </p>
         
-        <a
+        <Link
           href="/products"
           className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-medium transition-colors"
         >
           <HiOutlineShoppingBag className="w-5 h-5" />
           Start Shopping
-        </a>
+        </Link>
       </div>
     );
   }
@@ -253,7 +339,7 @@ const MyOrders = ({ orders: initialOrders }) => {
               <div className="flex items-center gap-3">
                 <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
                   {getStatusIcon(order.status)}
-                  {order.status || 'Confirmed'}
+                  {capitalizeStatus(order.status)}
                 </span>
                 <button
                   onClick={() => handleViewOrder(order)}
@@ -384,7 +470,7 @@ const MyOrders = ({ orders: initialOrders }) => {
                     <h3 className="font-semibold text-gray-900 mb-2">Order Status</h3>
                     <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border ${getStatusColor(selectedOrder.status)}`}>
                       {getStatusIcon(selectedOrder.status)}
-                      {selectedOrder.status || 'Pending'}
+                      {capitalizeStatus(selectedOrder.status)}
                     </span>
                   </div>
                   
@@ -425,7 +511,7 @@ const MyOrders = ({ orders: initialOrders }) => {
                   </h3>
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <p className="text-yellow-800 italic">
-                      "{selectedOrder.specialInstructions}"
+                      {selectedOrder.specialInstructions}
                     </p>
                   </div>
                 </div>

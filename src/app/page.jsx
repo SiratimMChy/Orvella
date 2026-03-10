@@ -9,7 +9,9 @@ import AboutPage from "./about/page";
 import ContactPage from "./contact/page";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
-
+export const metadata = {
+  title: 'Orvella'
+};
 export default async function Home() {
    const session = await getServerSession(authOptions);
    const newArrivals = await getNewArrivals(4);

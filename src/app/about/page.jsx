@@ -1,11 +1,16 @@
+import Image from 'next/image';
 import React from 'react';
 import { FaUsers, FaHeart, FaShoppingBag, FaAward } from 'react-icons/fa';
+
+export const metadata = {
+  title: 'About Us',
+  description: 'Learn about Orvella - your style companion. Discover our mission, vision, and values in providing quality fashion for everyone.',
+};
 
 const AboutPage = () => {
   return (
     <div className="w-full px-2 lg:px-0 py-8">
-      <title>About Us</title>
-      
+
       <h1 className="text-center text-3xl font-bold mb-8">
         About Orvella
       </h1>
@@ -18,21 +23,23 @@ const AboutPage = () => {
               Made for Your Everyday Look
             </h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Orvella is more than just a clothing brand - we&apos;re your style companion. 
-              Founded with the vision to make fashion accessible, comfortable, and stylish 
+              Orvella is more than just a clothing brand - we&apos;re your style companion.
+              Founded with the vision to make fashion accessible, comfortable, and stylish
               for everyone, we curate collections that speak to your personality.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              From men&apos;s essentials to ladies&apos; fashion and kids&apos; wear, every piece 
-              is carefully selected to ensure quality, comfort, and style that fits 
+              From men&apos;s essentials to ladies&apos; fashion and kids&apos; wear, every piece
+              is carefully selected to ensure quality, comfort, and style that fits
               your lifestyle perfectly.
             </p>
           </div>
+
           <div className="relative h-80 rounded-xl overflow-hidden bg-gray-100">
-            <img
+            <Image
               src="/assets/orvella1.jpg"
               alt="About Orvella"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
         </div>
@@ -67,16 +74,16 @@ const AboutPage = () => {
         <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
           <h3 className="text-xl font-bold text-gray-900 mb-4">Our Mission</h3>
           <p className="text-gray-600 leading-relaxed">
-            To provide high-quality, stylish, and affordable clothing that empowers 
-            individuals to express their unique style with confidence. We believe 
+            To provide high-quality, stylish, and affordable clothing that empowers
+            individuals to express their unique style with confidence. We believe
             fashion should be accessible to everyone, regardless of age, size, or budget.
           </p>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
           <h3 className="text-xl font-bold text-gray-900 mb-4">Our Vision</h3>
           <p className="text-gray-600 leading-relaxed">
-            To become the leading fashion destination that celebrates diversity, 
-            promotes sustainable practices, and creates a community where everyone 
+            To become the leading fashion destination that celebrates diversity,
+            promotes sustainable practices, and creates a community where everyone
             feels confident and beautiful in their own skin.
           </p>
         </div>

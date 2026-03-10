@@ -2,6 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { FaShippingFast, FaShieldAlt, FaUndo, FaHeadset, FaStar, FaCreditCard, FaLeaf, FaUsers } from 'react-icons/fa';
 
+export const metadata = {
+  title: 'Why Choose Us',
+  description: 'Discover why Orvella is your trusted fashion destination. Free shipping, secure payment, easy returns, and 24/7 support.',
+};
+
 const WhyChooseUsPage = () => {
   const features = [
     {
@@ -48,8 +53,6 @@ const WhyChooseUsPage = () => {
 
   return (
     <div className='m-4 pb-25 p-2 lg:px-20'>
-      <title>Why Choose Us</title>
-      
       <h1 className="text-center text-3xl font-bold mb-8">
         Why Choose Orvella?
       </h1>

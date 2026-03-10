@@ -38,7 +38,7 @@ const NewArrivals = ({ products }) => {
             {/* Product Container */}
             <div className="relative bg-white rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500 transform group-hover:-translate-y-2 border border-gray-100 overflow-hidden">
               {/* Product Image */}
-              <div className="relative h-40 lg:h-72 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+              <div className="relative h-32 lg:h-56 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                 <Image
                   src={product.image}
                   alt={product.title}

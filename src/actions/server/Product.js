@@ -3,12 +3,23 @@
 import { collections, dbConnect } from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
 
-export const getProducts = async () => {
-  const products = await dbConnect(collections.PRODUCTS).find().toArray();
-  return products.map(product => ({
-    ...product,
-    _id: product._id.toString()
-  }));
+export const getProducts = async (page = 1, limit = 9) => {
+  const skip = (page - 1) * limit;
+  
+  const [products, total] = await Promise.all([
+    dbConnect(collections.PRODUCTS).find().skip(skip).limit(limit).toArray(),
+    dbConnect(collections.PRODUCTS).countDocuments()
+  ]);
+  
+  return {
+    products: products.map(product => ({
+      ...product,
+      _id: product._id.toString()
+    })),
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
+  };
 };
 
 export const getSingleProduct = async (id) => {

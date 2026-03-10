@@ -9,6 +9,10 @@ const LadiesPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = 'Ladies Wear - Orvella';
+  }, []);
+
+  useEffect(() => {
     let isMounted = true;
     
     const fetchProducts = async () => {
@@ -57,8 +61,6 @@ const LadiesPage = () => {
 
   return (
     <div className='m-4 pb-25 p-2 lg:px-20'>
-      <title>Ladies Wear</title>
-      
       <h1 className="text-center text-3xl font-bold mb-8">
         Ladies Wear Collection
       </h1>

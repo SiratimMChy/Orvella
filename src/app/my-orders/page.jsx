@@ -6,6 +6,11 @@ import MyOrders from "@/components/home/MyOrders";
 import { HiOutlineShoppingBag, HiOutlineArrowLeft } from "react-icons/hi2";
 import Link from "next/link";
 
+export const metadata = {
+  title: 'My Orders',
+  description: 'Track and manage your order history at Orvella.',
+};
+
 const MyOrdersPage = async () => {
   const session = await getServerSession(authOptions);
   
@@ -33,9 +38,9 @@ const MyOrdersPage = async () => {
     specialInstructions: order.specialInstructions || '',
     userEmail: order.userEmail || '',
     userName: order.userName || '',
-    items: order.items.map((item) => ({
-      _id: item._id.toString(),
-      productId: item.productId ? item.productId.toString() : '',
+    items: order.items.map((item, index) => ({
+      _id: item._id ? item._id.toString() : `item-${index}`,
+      productId: item.productId ? (typeof item.productId === 'object' ? item.productId.toString() : item.productId) : '',
       title: item.title || '',
       quantity: item.quantity || 0,
       price: item.price || 0,
