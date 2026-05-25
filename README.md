@@ -4,14 +4,17 @@
 
 **A modern, full-stack Next.js e-commerce application for premium fashion retail**
 
-![Next.js](https://img.shields.io/badge/Next.js-16.1.2-black?style=for-the-badge&logo=next.js&logoColor=white)
-[![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=flat&logo=react&logoColor=white)](https://react.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.2-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-7.0.0-47A248?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.18-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-20.4.0-008CDD?style=flat&logo=stripe&logoColor=white)](https://stripe.com/)
 
-<a href="https://orvella-zeta.vercel.app" target="_blank">
-  <img src="https://img.shields.io/badge/LIVE%20DEMO-Visit%20Site-ef4444?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+<a href="https://orvella-zeta.vercel.app" target="_blank" rel="noopener noreferrer">
+  <img 
+    src="https://img.shields.io/badge/LIVE%20DEMO-Visit%20Site-ef4444?style=for-the-badge&logo=vercel&logoColor=white" 
+    alt="Live Demo - Visit Orvella Zeta website"
+  />
 </a>
 
 </div>
