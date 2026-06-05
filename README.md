@@ -12,8 +12,8 @@
 
 <a href="https://orvella-zeta.vercel.app" target="_blank" rel="noopener noreferrer">
   <img 
-    src="https://img.shields.io/badge/LIVE%20DEMO-Visit%20Site-ef4444?style=for-the-badge&logo=vercel&logoColor=white" 
-    alt="Live Demo - Visit Orvella Zeta website"
+    src="https://img.shields.io/badge/ORVELLA%20-LIVE%20DEMO-ef4444?style=flat&logo=vercel&logoColor=white" 
+    alt="Orvella Zeta Live Demo"
   />
 </a>
 
